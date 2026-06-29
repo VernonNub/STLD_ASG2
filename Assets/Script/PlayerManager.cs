@@ -26,9 +26,14 @@ public class PlayerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        camera = gameObject.GetComponent<Camera>();
+        camera = GameObject.Find("MainCamera").GetComponent<Camera>();
         cc = gameObject.GetComponent<CharacterController>();
         starterAssetsInputs = gameObject.GetComponent<StarterAssetsInputs>();
+    }
+
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame

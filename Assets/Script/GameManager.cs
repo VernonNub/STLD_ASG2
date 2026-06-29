@@ -1,16 +1,31 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    //Singleton initialise
+    public static GameManager Instance;
 
-    // Update is called once per frame
-    void Update()
+    public int gameProgress = 0;
+
+    public List<string> objectives = new List<string>
     {
-        
+        "Where Am I?"
+    };
+    public Dictionary<string, string> objectiveDescription = new Dictionary<string, string>
+    {
+        {"Where Am I?", "Investigate the spaceship for clues."}
+    };
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 }

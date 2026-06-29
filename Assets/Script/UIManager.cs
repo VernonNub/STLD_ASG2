@@ -2,23 +2,26 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
     //Singleton initialise
     public static UIManager Instance;
+    
+    [Header("Player GUI")]
+    private Slider healthBar;
+    [SerializeField] PlayerManager playerManager;
+    [SerializeField] GameObject deathUI;
+    [SerializeField] TMP_Text missionUI;
+    [SerializeField] TMP_Text missionDescriptionUI;
+    [SerializeField] TMP_Text playerCashIndicator;
+    [SerializeField] TMP_Text playerScrapsIndicator;
 
-    public Slider healthBar;
-    public PlayerManager playerManager;
-    public GameObject deathUI;
 
     private void Update()
     {
-        if (playerManager != null)
-        {
-            healthBar.maxValue = playerManager.playerMaxHealth;
-            healthBar.value = playerManager.playerHealth;
-        }
+        UpdateGUI();
     }
 
     //Ensures that there is only 1 of this gameobject
@@ -65,11 +68,50 @@ public class UIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        healthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
-        deathUI = GameObject.Find("DeathScreen");
-        playerManager = GameObject.Find("Player").GetComponent<PlayerManager>();
+        if(scene.name == "ShipScene" || scene.name == "PlanetScene")
+        {
+            //Gets the different component after entering game scenes
+            healthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
+            deathUI = GameObject.Find("DeathScreen");
+            playerManager = GameObject.Find("Player").GetComponent<PlayerManager>();
+            missionUI = GameObject.Find("Mission").GetComponent<TMP_Text>();
+            missionDescriptionUI = GameObject.Find("Description").GetComponent<TMP_Text>();
+            playerCashIndicator = GameObject.Find("CashAmount").GetComponent<TMP_Text>();
+            playerScrapsIndicator = GameObject.Find("ScrapsAmount").GetComponent<TMP_Text>();
 
-        deathUI.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
+            if(deathUI != null)
+            {
+                deathUI.SetActive(false);
+            }
+            
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
+    public void QuitGame()
+    {
+        UnityEditor.EditorApplication.isPlaying = false;
+        Application.Quit();
+    }
+
+    private void UpdateGUI()
+    {
+        if (playerManager != null)
+        {
+            healthBar.maxValue = playerManager.playerMaxHealth;
+            healthBar.value = playerManager.playerHealth;
+        }
+
+        if (missionUI != null && missionDescriptionUI != null)
+        {
+            missionUI.text = GameManager.Instance.objectives[GameManager.Instance.gameProgress];
+            missionDescriptionUI.text = GameManager.Instance.objectiveDescription[GameManager.Instance.objectives[GameManager.Instance.gameProgress]];
+        }
+
+        if(playerCashIndicator != null && playerScrapsIndicator != null)
+        {
+            playerCashIndicator.text = "Cash: " + playerManager.cash;
+            playerScrapsIndicator.text = "Scraps: " + playerManager.scraps;
+        }
     }
 }
