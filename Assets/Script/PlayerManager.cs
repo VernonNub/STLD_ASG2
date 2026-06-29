@@ -20,15 +20,15 @@ public class PlayerManager : MonoBehaviour
     public List<string> inventory = new List<string>();
 
     [Header("Player Components")]
-    [SerializeField] Camera playerCamera;
+    public Camera playerCamera;
     public CharacterController cc;
     public GameObject checkPoint;
     public StarterAssetsInputs starterAssetsInputs;
 
     [Header("Collectible & Interactable")]
-    [SerializeField] GameObject collectible;
+    public GameObject collectible;
     [SerializeField] CollectibleManager collectibleManager;
-    [SerializeField] GameObject interactable;
+    public GameObject interactable;
     [SerializeField] InteractibleManager interactableManager;
 
     private void OnEnable()
@@ -101,6 +101,7 @@ public class PlayerManager : MonoBehaviour
         if (collectible != null)
         {
             collectibleManager = collectible.GetComponent<CollectibleManager>();
+            collectibleManager.CollectItems(this);
         }
         else if (interactable != null)
         {

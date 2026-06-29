@@ -17,11 +17,28 @@ public class UIManager : MonoBehaviour
     [SerializeField] TMP_Text missionDescriptionUI;
     [SerializeField] TMP_Text playerCashIndicator;
     [SerializeField] TMP_Text playerScrapsIndicator;
+    [SerializeField] GameObject interactPrompt;
+    [SerializeField] Transform interactObjectTransform;
+    public Vector3 interactObjectOffset;
 
 
     private void Update()
     {
         UpdateGUI();
+        
+        if(playerManager != null && (playerManager.collectible != null || playerManager.interactable != null))
+        {
+            if(playerManager.collectible == null)
+                interactObjectTransform = playerManager.interactable.transform;
+            else
+                interactObjectTransform = playerManager.collectible.transform;
+
+            ShowInteractivePrompt();
+        }
+        else if(interactPrompt != null)
+        {
+            interactPrompt.SetActive(false);
+        }
     }
 
     //Ensures that there is only 1 of this gameobject
@@ -78,11 +95,13 @@ public class UIManager : MonoBehaviour
             missionDescriptionUI = GameObject.Find("Description").GetComponent<TMP_Text>();
             playerCashIndicator = GameObject.Find("CashAmount").GetComponent<TMP_Text>();
             playerScrapsIndicator = GameObject.Find("ScrapsAmount").GetComponent<TMP_Text>();
+            interactPrompt = GameObject.Find("InteractPrompt");
 
             if(deathUI != null)
-            {
                 deathUI.SetActive(false);
-            }
+
+            if (interactPrompt != null)
+                interactPrompt.SetActive(false);
             
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -113,5 +132,14 @@ public class UIManager : MonoBehaviour
             playerCashIndicator.text = "Cash: " + playerManager.cash;
             playerScrapsIndicator.text = "Scraps: " + playerManager.scraps;
         }
+    }
+
+    private void ShowInteractivePrompt()
+    {
+        interactPrompt.SetActive(true);
+        interactPrompt.transform.position = interactObjectTransform.position + interactObjectOffset;
+
+        interactPrompt.transform.LookAt(playerManager.playerCamera.transform);
+        transform.Rotate(0, 180, 0);
     }
 }
