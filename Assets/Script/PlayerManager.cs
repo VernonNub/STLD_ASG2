@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
     public float raycastLength = 10;
     private int mask = (1 << 6) | (1 << 7);
     public int playerDeath;
+    public bool canMove = true;
 
     [Header("Inventory")]
     public int cash = 0;
@@ -23,7 +24,7 @@ public class PlayerManager : MonoBehaviour
     public Camera playerCamera;
     public CharacterController cc;
     public GameObject checkPoint;
-    public StarterAssetsInputs starterAssetsInputs;
+    public ThirdPersonController tpc;
 
     [Header("Collectible & Interactable")]
     public GameObject collectible;
@@ -35,7 +36,7 @@ public class PlayerManager : MonoBehaviour
     {
         playerCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
         cc = gameObject.GetComponent<CharacterController>();
-        starterAssetsInputs = gameObject.GetComponent<StarterAssetsInputs>();
+        tpc = gameObject.GetComponent<ThirdPersonController>();
     }
 
     void Start()
@@ -52,6 +53,15 @@ public class PlayerManager : MonoBehaviour
         }
 
         HandleRayCast();
+
+        if(canMove)
+        {
+            cc.enabled = true;
+        }
+        else if (!canMove)
+        {
+            cc.enabled = false;
+        }
     }
 
     private void HandleDeath()
@@ -68,8 +78,9 @@ public class PlayerManager : MonoBehaviour
         playerHealth = 100;
         playerMaxHealth = 100;
 
-        cc.enabled = false;
+        canMove = false;
         gameObject.transform.position = checkPoint.transform.position;
+        Cursor.lockState = CursorLockMode.None;
     }
     
     private void HandleRayCast()
@@ -112,5 +123,31 @@ public class PlayerManager : MonoBehaviour
     void OnInteraction()
     {
         HandleInteraction();
+    }
+
+    //For taking damage, maxhealth boosts, healing etc. Parameters --> Health change - amount of health given/minus, maxhealthchange - amount of health given/minus
+    public void UpdateHealth(float HealthChange, float MaxHealthChange)
+    {
+        //Ensure that health does not go past MaxHealth (Doesnt give extra health)
+        playerHealth = Mathf.Min(playerHealth + HealthChange, playerMaxHealth);
+
+        //Ensure player max health is not 0 or does not become negative
+        if (playerMaxHealth + MaxHealthChange <= 0)
+        {
+            playerMaxHealth = 1;
+        }
+        else
+        {
+            playerMaxHealth += MaxHealthChange;
+        }
+
+        if (MaxHealthChange < 0 && playerHealth > playerMaxHealth)
+        {
+            playerHealth = playerMaxHealth;
+        }
+        else if (MaxHealthChange > 0)
+        {
+            playerHealth += MaxHealthChange;
+        }
     }
 }

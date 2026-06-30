@@ -23,15 +23,19 @@ public class CollectibleManager : MonoBehaviour
         {
             case CollectibleType.Cash:
                 player.cash += cash;
+                Destroy(gameObject);
                 break;
             case CollectibleType.Scraps:
                 player.scraps += scraps;
+                Destroy(gameObject);
                 break;
             case CollectibleType.Objectives:
                 player.inventory.Add(itemName);
+                Destroy(gameObject);
                 break;
             case CollectibleType.Buffs:
                 AddBuffs(player);
+                Destroy(gameObject);
                 break;
         }
     }

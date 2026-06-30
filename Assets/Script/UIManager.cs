@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     
     [Header("Player GUI")]
     private Slider healthBar;
-    [SerializeField] PlayerManager playerManager;
+    public PlayerManager playerManager;
     [SerializeField] GameObject deathUI;
     [SerializeField] TMP_Text missionUI;
     [SerializeField] TMP_Text missionDescriptionUI;
@@ -64,18 +64,14 @@ public class UIManager : MonoBehaviour
 
     public void SetCursorNMovement()
     {
+
+        GameObject.Find("Player").GetComponent<PlayerManager>().canMove = true;
         Cursor.lockState = CursorLockMode.Locked;
-        playerManager.cc.enabled = true;
-        Cursor.visible = false;
-        playerManager.starterAssetsInputs.cursorLocked = true;
     }
 
     public void DisplayDeathUI()
     {
         deathUI.SetActive(true);
-        playerManager.starterAssetsInputs.cursorLocked = false;
-        //Cursor.lockState = CursorLockMode.None;
-       // Cursor.visible = true;
     }
 
     public void LoadScene(string sceneName)

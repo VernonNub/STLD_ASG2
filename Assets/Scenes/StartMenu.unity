@@ -1510,6 +1510,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UiManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4883011131118259187, guid: d5e53189a69cb7e418be6c9a7adbdf4a, type: 3}
+      propertyPath: interactObjectOffset.y
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
